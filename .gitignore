@@ -3,8 +3,7 @@
 .flaskenv
 *.pyc
 *.pyo
-env/
-env*
+
 
 *.py[cod]
 
