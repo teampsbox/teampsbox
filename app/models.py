@@ -6,6 +6,7 @@ from hashlib import md5
 from time import time
 import jwt
 from flask import current_app
+from flask_login import current_user
 
 
 @login.user_loader
@@ -27,6 +28,7 @@ class User(UserMixin, db.Model):
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    image_file = db.Column(db.String(25), nullable=False)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
