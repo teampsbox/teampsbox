@@ -28,7 +28,7 @@ class User(UserMixin, db.Model):
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-    image_file = db.Column(db.String(25), nullable=False)
+    
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -41,7 +41,7 @@ class User(UserMixin, db.Model):
 
     def avatar(self, size):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
-        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+        return 'https://www.gravatar.com/avatar/{}?d=mp&s={}'.format(
             digest, size)
 
     followed = db.relationship(

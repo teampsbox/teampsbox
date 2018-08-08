@@ -70,25 +70,14 @@ def user(username):
                            next_url=next_url, prev_url=prev_url)
 
 
-def save_picture(form_picture):
-    random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(form_picture.filename)
-    picture_fn = random_hex + f_ext
-    picture_path = os.path.join(current_app.root_path, 'static/profile_pics', picture_fn)
-    form_picture.save(picture_path)
 
-    return picture_fn
 
 
 @bp.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
     form = EditProfileForm(current_user.username)
-    if form.validate_on_submit():
-        if form.picture.data:
-            picture_file = save_picture(form.picture.data)
-            current_user.image_file = picture_file
-
+    if form.validate_on_submit():     
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
         db.session.commit()
@@ -96,8 +85,6 @@ def edit_profile():
         return redirect(url_for('main.user', username=current_user.username))
     elif request.method == 'GET':
         form.username.data = current_user.username
-        form.about_me.data = current_user.about_me
-    image_file = url_for('static', filename='profile_pics/' + 'current_user.image_file')
     return render_template('edit_profile.html', title='Edit Profile',
                            form=form)
 
