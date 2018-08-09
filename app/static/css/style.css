@@ -1,0 +1,24 @@
+
+body {
+    font-family: Arial, Helvetica, sans-serif
+}
+
+.navbar-default {
+    background-color: #005285 !important;
+  }
+
+.navbar-default .navbar-toggle {
+    border-color: transparent;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #f8a62b; 
+  }
+
+.navbar-default .navbar-nav>.open>a,
+.navbar-default .navbar-nav>.open>a:focus,
+.navbar-default .navbar-nav>.open>a:hover {
+    color: #f8a62b;
+    background-color: transparent;
+}
+

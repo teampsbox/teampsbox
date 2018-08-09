@@ -1,11 +1,22 @@
 {% extends 'bootstrap/base.html' %}
 
+{% block head %}
+{{super()}}
+<link rel="icon" type="image/png" href="{{url_for('static', filename='img/favicon.png')}}">
+{% endblock %}
+
 {% block title %}
     {% if title %}{{ title }} |TeamPSBOX{% else %}Welcome to TeamPSBOX{% endif %}
 {% endblock %}
 
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
 {% block navbar %}
-    <nav class="navbar navbar-default">
+    <nav class="nav navbar-default navbar-inverse">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -14,7 +25,9 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ url_for('main.index') }}">TeamPSBOX</a>
+                <a class="navbar-brand" href="{{ url_for('main.index') }}">
+                    <img src="{{ url_for('static', filename='img/logo.png')}}" width="25" height="25" alt="Logo|TeamPSBOX">
+                </a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
@@ -29,11 +42,46 @@
                 </form>
                 {% endif %}
                 <ul class="nav navbar-nav navbar-right">
+                        
+
+
                     {% if current_user.is_anonymous %}
                     <li><a href="{{ url_for('auth.login') }}">Login</a></li>
                     {% else %}
-                    <li><a href="{{ url_for('main.user', username=current_user.username) }}">Profile</a></li>
-                    <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+
+                    
+                    <li>
+                        <a href="{{ url_for('main.messages') }}">
+                            {{ 'Messages' }}
+                            {% set new_messages = current_user.new_messages() %}
+                            <span id="message_count" class="badge"
+                                  style="visibility: {% if new_messages %}visible
+                                                     {% else %}hidden {% endif %};">
+                                {{ new_messages }}
+                            </span>
+                        </a>
+                    </li>
+                        <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <img src="{{ current_user.avatar(25) }}"> {{ current_user.username}}  
+                                        <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="{{ url_for('main.user', username=current_user.username) }}"><i class="fa fa-fw fa-user"></i> Profile</a>
+                                    </li>
+                                    <li class="disabled">
+                                        <a href="{{ url_for('main.messages') }}"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ url_for('main.edit_profile') }}"><i class="fa fa-fw fa-gear"></i> Settings</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a href="{{ url_for('auth.logout') }}"><i class="fa fa-fw fa-power-off"></i> Log Out </a>
+                                    </li>
+                                </ul>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
@@ -60,4 +108,30 @@
 {% block scripts %}
     {{ super() }}
     {{ moment.include_moment() }}
+
+    <script>
+        // ...
+        function set_message_count(n) {
+            $('#message_count').text(n);
+            $('#message_count').css('visibility', n ? 'visible' : 'hidden');
+        }
+
+        {% if current_user.is_authenticated %}
+        $(function() {
+            var since = 0;
+            setInterval(function() {
+                $.ajax('{{ url_for('main.notifications') }}?since=' + since).done(
+                    function(notifications) {
+                        for (var i = 0; i < notifications.length; i++) {
+                            if (notifications[i].name == 'unread_message_count')
+                                set_message_count(notifications[i].data);
+                            since = notifications[i].timestamp;
+                        }
+                    }
+                );
+            }, 10000);
+        });
+        {% endif %}
+    </script>
 {% endblock %}
+
