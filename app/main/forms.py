@@ -23,7 +23,8 @@ class EditProfileForm(FlaskForm):
 
 
 class PostForm(FlaskForm):
-    post = TextAreaField('Say something', validators=[DataRequired()])
+    title = TextAreaField('Problem', validators=[DataRequired()])
+    body = TextAreaField('Solution', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 

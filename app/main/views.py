@@ -18,12 +18,11 @@ def before_request():
 
 
 @bp.route('/', methods=['GET', 'POST'])
-@bp.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
     form = PostForm()
-    if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
+    if form.validate_on_submit():        
+        post = Post(title=form.title.data, body=form.body.data, author=current_user)
         db.session.add(post)
         db.session.commit()
         flash('Your post is now live!')

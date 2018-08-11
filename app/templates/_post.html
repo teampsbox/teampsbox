@@ -10,8 +10,9 @@
                     {{ post.author.username }}
             </a>
             said {{ moment(post.timestamp).fromNow() }}:
+                <h3><strong>{{ post.title }}</strong></h3>
             <br>
-            {{ post.body }}
+                {{ post.body }}
         </td>
     </tr>
 </table>
